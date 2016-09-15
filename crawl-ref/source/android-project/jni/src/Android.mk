@@ -80,7 +80,6 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
     $(CRAWL_PATH)/errors.cc \
     $(CRAWL_PATH)/evoke.cc \
     $(CRAWL_PATH)/exclude.cc \
-    $(CRAWL_PATH)/exercise.cc \
     $(CRAWL_PATH)/fearmonger.cc \
     $(CRAWL_PATH)/feature.cc \
     $(CRAWL_PATH)/fight.cc \

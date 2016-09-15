@@ -32,7 +32,6 @@
 #include "english.h"
 #include "env.h"
 #include "errors.h"
-#include "exercise.h"
 #include "food.h"
 #include "godabil.h"
 #include "godconduct.h"
@@ -5415,8 +5414,6 @@ void player::init_skills()
     skill_points.init(0);
     ct_skill_points.init(0);
     skill_order.init(MAX_SKILL_ORDER);
-    exercises.clear();
-    exercises_all.clear();
 }
 
 player_save_info& player_save_info::operator=(const player& rhs)
@@ -5733,7 +5730,6 @@ void player::shield_block_succeeded(actor *foe)
     actor::shield_block_succeeded(foe);
 
     shield_blocks++;
-    practise_shield_block();
     if (shield())
         count_action(CACT_BLOCK, shield()->sub_type);
     else

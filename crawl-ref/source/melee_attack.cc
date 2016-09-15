@@ -23,9 +23,9 @@
 #include "delay.h"
 #include "english.h"
 #include "env.h"
-#include "exercise.h"
 #include "fineff.h"
 #include "food.h"
+#include "godabil.h" // USKAYAW_DID_DANCE_ACTION
 #include "godconduct.h"
 #include "goditem.h"
 #include "godpassive.h" // passive_t::convert_orcs
@@ -240,11 +240,6 @@ bool melee_attack::handle_phase_attempted()
     }
 
     attack_occurred = true;
-
-    // Check for player practicing dodging
-    if (defender->is_player())
-        practise_being_attacked();
-
     return true;
 }
 
@@ -1758,7 +1753,7 @@ void melee_attack::player_exercise_combat_skills()
     if (defender && defender->is_monster()
         && !mons_is_firewood(*defender->as_monster()))
     {
-        practise_hitting(weapon);
+        you.props[USKAYAW_DID_DANCE_ACTION] = true;
     }
 }
 
@@ -2516,9 +2511,6 @@ bool melee_attack::mons_attack_effects()
             defender->expose_to_element(special_damage_flavour, 2);
         }
     }
-
-    if (defender->is_player())
-        practise_being_hit();
 
     // A tentacle may have banished its own parent/sibling and thus itself.
     if (!attacker->alive())

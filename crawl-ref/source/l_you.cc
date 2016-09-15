@@ -830,7 +830,6 @@ LUAFN(you_init)
 }
 
 LUARET1(you_exp_needed, number, exp_needed(luaL_checkint(ls, 1)))
-LUAWRAP(you_exercise, exercise(str_to_skill(luaL_checkstring(ls, 1)), 1))
 LUARET1(you_skill_cost_level, number, you.skill_cost_level)
 LUARET1(you_skill_points, number,
         you.skill_points[str_to_skill(luaL_checkstring(ls, 1))])
@@ -860,7 +859,6 @@ static const struct luaL_reg you_dlib[] =
 { "gain_exp",           you_gain_exp },
 { "init",               you_init },
 { "exp_needed",         you_exp_needed },
-{ "exercise",           you_exercise },
 { "skill_cost_level",   you_skill_cost_level },
 { "skill_points",       you_skill_points },
 { "zigs_completed",     you_zigs_completed },

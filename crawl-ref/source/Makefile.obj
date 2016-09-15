@@ -61,7 +61,6 @@ english.o \
 errors.o \
 evoke.o \
 exclude.o \
-exercise.o \
 fearmonger.o \
 feature.o \
 fight.o \

@@ -25,7 +25,6 @@
 #include "dungeon.h"
 #include "english.h"
 #include "env.h"
-#include "exercise.h"
 #include "fight.h"
 #include "food.h"
 #include "ghost.h"
@@ -721,7 +720,6 @@ void zap_wand(int slot)
     if (wand.charges == 0 && wand.flags & ISFLAG_KNOW_PLUSES)
         wand.used_count = ZAPCOUNT_EMPTY;
 
-    practise_evoking(1);
     count_action(CACT_EVOKE, EVOC_WAND);
     alert_nearby_monsters();
 
@@ -2036,7 +2034,6 @@ bool evoke_item(int slot, bool check_range)
             return false;
 
         did_work = true;  // _rod_spell() handled messages
-        practise_evoking(1);
         count_action(CACT_EVOKE, EVOC_ROD);
         break;
 
@@ -2078,7 +2075,6 @@ bool evoke_item(int slot, bool check_range)
             inc_mp(1 + random2(3));
             make_hungry(50, false, true);
             did_work = true;
-            practise_evoking(1);
             count_action(CACT_EVOKE, STAFF_ENERGY, OBJ_STAVES);
 
             did_god_conduct(DID_CHANNEL, 1, true);
@@ -2106,7 +2102,6 @@ bool evoke_item(int slot, bool check_range)
         if (is_deck(item))
         {
             evoke_deck(item);
-            practise_using_deck();
             count_action(CACT_EVOKE, EVOC_DECK);
             break;
         }
@@ -2134,7 +2129,6 @@ bool evoke_item(int slot, bool check_range)
                                                 surge),
                        coord_def());
             expend_xp_evoker(item);
-            practise_evoking(3);
             break;
         }
 
@@ -2145,10 +2139,7 @@ bool evoke_item(int slot, bool check_range)
                 return false;
             }
             if (_lamp_of_fire())
-            {
                 expend_xp_evoker(item);
-                practise_evoking(3);
-            }
             else
                 return false;
 
@@ -2167,10 +2158,7 @@ bool evoke_item(int slot, bool check_range)
                 return false;
             }
             if (_phial_of_floods())
-            {
                 expend_xp_evoker(item);
-                practise_evoking(3);
-            }
             else
                 return false;
             break;
@@ -2182,34 +2170,28 @@ bool evoke_item(int slot, bool check_range)
                 return false;
             }
             if (_evoke_horn_of_geryon(item))
-            {
                 expend_xp_evoker(item);
-                practise_evoking(3);
-            }
             else
                 return false;
             break;
 
         case MISC_BOX_OF_BEASTS:
-            if (_box_of_beasts(item))
-                practise_evoking(1);
+            _box_of_beasts(item);
             break;
 
         case MISC_SACK_OF_SPIDERS:
-            if (_sack_of_spiders(item))
-                practise_evoking(1);
+            _sack_of_spiders(item);
             break;
 
         case MISC_CRYSTAL_BALL_OF_ENERGY:
             if (!_check_crystal_ball())
                 unevokable = true;
-            else if (_ball_of_energy())
-                practise_evoking(1);
+            else
+                _ball_of_energy();
             break;
 
         case MISC_DISC_OF_STORMS:
-            if (disc_of_storms())
-                practise_evoking(1);
+            disc_of_storms();
             break;
 
         case MISC_QUAD_DAMAGE:
@@ -2230,9 +2212,8 @@ bool evoke_item(int slot, bool check_range)
                 case SPRET_SUCCESS:
                     ASSERT(in_inventory(item));
                     dec_inv_item_quantity(item.link, 1);
-                    // deliberate fall-through
+                    break;
                 case SPRET_FAIL:
-                    practise_evoking(1);
                     break;
             }
             break;
@@ -2256,7 +2237,9 @@ bool evoke_item(int slot, bool check_range)
         break;
     }
 
-    if (!did_work)
+    if (did_work)
+        you.props[USKAYAW_DID_DANCE_ACTION] = true;
+    else
         canned_msg(MSG_NOTHING_HAPPENS);
 
     if (!unevokable)

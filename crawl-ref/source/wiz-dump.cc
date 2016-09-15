@@ -633,7 +633,7 @@ bool chardump_parser::_parse_from_file(const string &full_filename)
         init_skill_order();
         init_can_train();
         init_train();
-        init_training();
+        reset_training();
     }
 
     return true;

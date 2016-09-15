@@ -291,7 +291,6 @@ perl.exe "util/gen-cflg.pl" compflag.h "&lt;UNKNOWN&gt;" "&lt;UNKNOWN&gt;"
     <ClCompile Include="..\errors.cc" />
     <ClCompile Include="..\evoke.cc" />
     <ClCompile Include="..\exclude.cc" />
-    <ClCompile Include="..\exercise.cc" />
     <ClCompile Include="..\fearmonger.cc" />
     <ClCompile Include="..\feature.cc" />
     <ClCompile Include="..\fight.cc" />
@@ -683,7 +682,6 @@ perl.exe "util/gen-cflg.pl" compflag.h "&lt;UNKNOWN&gt;" "&lt;UNKNOWN&gt;"
     <ClInclude Include="..\errors.h" />
     <ClInclude Include="..\evoke.h" />
     <ClInclude Include="..\exclude.h" />
-    <ClInclude Include="..\exercise.h" />
     <ClInclude Include="..\externs.h" />
     <ClInclude Include="..\feature.h" />
     <ClInclude Include="..\feature-data.h" />

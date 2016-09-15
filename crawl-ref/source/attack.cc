@@ -19,7 +19,6 @@
 #include "delay.h"
 #include "english.h"
 #include "env.h"
-#include "exercise.h"
 #include "fight.h"
 #include "fineff.h"
 #include "godconduct.h"
@@ -1861,7 +1860,6 @@ int attack::player_stab(int damage)
     {
         // Construct reasonable message.
         stab_message();
-        practise_stabbing();
     }
     else
     {

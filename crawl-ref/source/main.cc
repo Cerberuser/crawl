@@ -69,7 +69,6 @@
 #include "env.h"
 #include "errors.h"
 #include "evoke.h"
-#include "exercise.h"
 #include "fight.h"
 #include "files.h"
 #include "fineff.h"
@@ -748,7 +747,7 @@ static void _do_wizard_command(int wiz_command)
     case 'F': wizard_fight_sim(false); break;
     case CONTROL('F'): wizard_fight_sim(true); break;
 
-    case 'g': wizard_exercise_skill(); break;
+    case 'g':
     case 'G': wizard_dismiss_all_monsters(); break;
 #ifdef DEBUG_BONES
     case CONTROL('G'): debug_ghosts(); break;

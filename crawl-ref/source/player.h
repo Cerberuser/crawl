@@ -197,8 +197,6 @@ public:
     FixedVector<uint8_t, NUM_SKILLS>  skill_order;
 
     bool auto_training;
-    list<skill_type> exercises;     ///< recent practise events
-    list<skill_type> exercises_all; ///< also include events for disabled skills
     set<skill_type> stop_train;     ///< need to check if we can still train
     set<skill_type> start_train;    ///< we can resume training
 

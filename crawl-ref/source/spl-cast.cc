@@ -22,7 +22,6 @@
 #include "directn.h"
 #include "english.h"
 #include "env.h"
-#include "exercise.h"
 #include "food.h"
 #include "format.h"
 #include "godabil.h"
@@ -843,11 +842,11 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
-    practise_casting(spell, cast_result == SPRET_SUCCESS);
     if (cast_result == SPRET_SUCCESS)
     {
         did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
         count_action(CACT_CAST, spell);
+        you.props[USKAYAW_DID_DANCE_ACTION] = true;
     }
 
 #if TAG_MAJOR_VERSION == 34

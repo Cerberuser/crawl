@@ -18,7 +18,6 @@
 #include "directn.h"
 #include "english.h"
 #include "env.h"
-#include "exercise.h"
 #include "ghost.h"
 #include "godabil.h"
 #include "hints.h"
@@ -285,8 +284,6 @@ bool check_awaken(monster* mons, int stealth)
 
     int mons_perc = 10 + (mons_intel(*mons) * 4) + mons->get_hit_dice();
 
-    bool unnatural_stealthy = false; // "stealthy" only because of invisibility?
-
     // Critters that are wandering but still have MHITYOU as their foe are
     // still actively on guard for the player, even if they can't see you.
     // Give them a large bonus -- handle_behaviour() will nuke 'foe' after
@@ -295,10 +292,7 @@ bool check_awaken(monster* mons, int stealth)
         mons_perc += 15;
 
     if (!you.visible_to(mons))
-    {
         mons_perc -= 75;
-        unnatural_stealthy = true;
-    }
 
     if (mons->asleep())
     {
@@ -322,15 +316,6 @@ bool check_awaken(monster* mons, int stealth)
 
     if (x_chance_in_y(mons_perc + 1, stealth))
         return true; // Oops, the monster wakes up!
-
-    // You didn't wake the monster!
-    if (you.can_see(*mons) // to avoid leaking information
-        && !mons->wont_attack()
-        && !mons->neutral() // include pacified monsters
-        && mons_class_gives_xp(mons->type))
-    {
-        practise_sneaking(unnatural_stealthy);
-    }
 
     return false;
 }

@@ -17,7 +17,6 @@
 #include "ability.h"
 #include "describe-god.h"
 #include "evoke.h"
-#include "exercise.h"
 #include "godabil.h"
 #include "godconduct.h"
 #include "hints.h"
@@ -394,24 +393,6 @@ void check_skill_level_change(skill_type sk, bool do_level_up)
     }
 }
 
-// Fill a queue in random order with the values of the array.
-template <typename T, int SIZE>
-static void _init_queue(list<skill_type> &queue, FixedVector<T, SIZE> &array)
-{
-    ASSERT(queue.empty());
-
-    while (1)
-    {
-        skill_type sk = (skill_type)random_choose_weighted(array);
-        if (is_invalid_skill(sk))
-            break;
-        queue.push_back(sk);
-        --array[sk];
-    }
-
-    ASSERT(queue.size() == (unsigned)EXERCISE_QUEUE_SIZE);
-}
-
 static void _erase_from_stop_train(const skill_set &can_train)
 {
     for (skill_type sk : can_train)
@@ -660,30 +641,6 @@ static void _scale_array(FixedVector<T, SIZE> &array, int scale, bool exact)
     ASSERT(scaled_total == scale);
 }
 
-/*
- * Init the training array by scaling down the skill_points array to 100.
- * Used at game setup, when upgrading saves and when loading dump files.
- */
-void init_training()
-{
-    FixedVector<unsigned int, NUM_SKILLS> skills;
-    skills.init(0);
-    for (int i = 0; i < NUM_SKILLS; ++i)
-        if (skill_trained(i))
-            skills[i] = sqr(you.skill_points[i]);
-
-    _scale_array(skills, EXERCISE_QUEUE_SIZE, true);
-    _init_queue(you.exercises, skills);
-
-    for (int i = 0; i < NUM_SKILLS; ++i)
-        skills[i] = sqr(you.skill_points[i]);
-
-    _scale_array(skills, EXERCISE_QUEUE_SIZE, true);
-    _init_queue(you.exercises_all, skills);
-
-    reset_training();
-}
-
 // Make sure at least one skill is selected.
 // If not, go to the skill menu and return true.
 bool check_selected_skills()
@@ -747,69 +704,14 @@ void reset_training()
         else
             you.training[i] = you.train[i];
 
-    bool empty = true;
-    // In automatic mode, we fill the array with the content of the queue.
     if (you.auto_training)
     {
-        for (auto sk : you.exercises)
-            if (skill_trained(sk))
-            {
-                you.training[sk] += you.train[sk];
-                empty = false;
-            }
-
-        // We count the practise events in the other queue.
-        FixedVector<unsigned int, NUM_SKILLS> exer_all;
-        exer_all.init(0);
-        for (auto sk : you.exercises_all)
-            if (skill_trained(sk))
-            {
-                exer_all[sk] += you.train[sk];
-                empty = false;
-            }
-
-        // We keep the highest of the 2 numbers.
-        for (int sk = 0; sk < NUM_SKILLS; ++sk)
-            you.training[sk] = max(you.training[sk], exer_all[sk]);
-
-        // The selected skills have not been exercised recently. Give them all
-        // a default weight of 1 (or 2 for focus skills).
-        if (empty)
-        {
-            for (int sk = 0; sk < NUM_SKILLS; ++sk)
-                if (skill_trained(sk))
-                    you.training[sk] = you.train[sk];
-        }
-
-        // Focused skills get at least 20% training.
-        for (int sk = 0; sk < NUM_SKILLS; ++sk)
-            if (you.train[sk] == 2 && you.training[sk] < 20 && you.can_train[sk])
-                you.training[sk] += 5 * (5 - you.training[sk] / 4);
+        // TODO
+        for (int i = 0; i < NUM_SKILLS; ++i)
+            you.training[i] = you.train[i];
     }
 
     _scale_array(you.training, 100, you.auto_training);
-}
-
-void exercise(skill_type exsk, int deg)
-{
-    if (you.skills[exsk] >= MAX_SKILL_LEVEL)
-        return;
-
-    dprf(DIAG_SKILLS, "Exercise %s by %d.", skill_name(exsk), deg);
-
-    // push first in case queues are empty, like during -test
-    while (deg > 0)
-    {
-        if (skill_trained(exsk))
-        {
-            you.exercises.push_back(exsk);
-            you.exercises.pop_front();
-        }
-        you.exercises_all.push_back(exsk);
-        you.exercises_all.pop_front();
-        deg--;
-    }
-    reset_training();
 }
 
 // Check if we should stop training this skill immediately.

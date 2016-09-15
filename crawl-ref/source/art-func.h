@@ -23,7 +23,6 @@
 #include "beam.h"          // For Lajatang of Order's silver damage
 #include "cloud.h"         // For storm bow's and robe of clouds' rain
 #include "english.h"       // For apostrophise
-#include "exercise.h"      // For practise_evoking
 #include "fight.h"
 #include "food.h"          // For evokes
 #include "ghost.h"         // For is_dragonkind ghost_demon datas
@@ -109,7 +108,6 @@ static bool _ASMODEUS_evoke(item_def *item, bool* did_work, bool* unevokable)
     {
         make_hungry(200, false, true);
         *did_work = true;
-        practise_evoking(1);
     }
 
     return false;
@@ -208,7 +206,6 @@ static bool _DISPATER_evoke(item_def *item, bool* did_work, bool* unevokable)
     dec_hp(5 + random2avg(19, 2), false);
     dec_mp(2 + random2avg(5, 2));
     make_hungry(100, false, true);
-    practise_evoking(coinflip() ? 2 : 1);
 
     return false;
 }
@@ -262,7 +259,6 @@ static bool _OLGREB_evoke(item_def *item, bool* did_work, bool* unevokable)
 
     dec_mp(4);
     make_hungry(50, false, true);
-    practise_evoking(1);
 
     return false;
 }
@@ -456,7 +452,6 @@ static bool _WUCAD_MU_evoke(item_def *item, bool* did_work, bool* unevokable)
     make_hungry(50, false, true);
 
     *did_work = true;
-    practise_evoking(1);
     did_god_conduct(DID_CHANNEL, 10, true);
 
     return false;

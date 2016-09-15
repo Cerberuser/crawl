@@ -29,7 +29,6 @@
 #include "directn.h"
 #include "dungeon.h"
 #include "evoke.h"
-#include "exercise.h"
 #include "fight.h"
 #include "food.h"
 #include "godabil.h"
@@ -1675,9 +1674,10 @@ bool activate_talent(const talent& tal)
     {
         case SPRET_SUCCESS:
             ASSERT(!fail || testbits(abil.flags, abflag::HOSTILE));
-            practise_using_ability(abil.ability);
             _pay_ability_costs(abil);
-            count_action(tal.is_invocation ? CACT_INVOKE : CACT_ABIL, abil.ability);
+            count_action(tal.is_invocation ? CACT_INVOKE : CACT_ABIL,
+                         abil.ability);
+            you.props[USKAYAW_DID_DANCE_ACTION] = true;
             return true;
         case SPRET_FAIL:
             mpr("You fail to use your ability.");

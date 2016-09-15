@@ -1437,14 +1437,6 @@ static void tag_construct_you(writer &th)
     }
 
     marshallBoolean(th, you.auto_training);
-    marshallByte(th, you.exercises.size());
-    for (auto sk : you.exercises)
-        marshallInt(th, sk);
-
-    marshallByte(th, you.exercises_all.size());
-    for (auto sk : you.exercises_all)
-        marshallInt(th, sk);
-
     marshallByte(th, you.skill_menu_do);
     marshallByte(th, you.skill_menu_view);
 
@@ -2540,13 +2532,18 @@ static void tag_read_you(reader &th)
 
     you.auto_training = unmarshallBoolean(th);
 
-    count = unmarshallByte(th);
-    for (int i = 0; i < count; i++)
-        you.exercises.push_back((skill_type)unmarshallInt(th));
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_MINOR_NO_EXERCISE)
+    {
+        count = unmarshallByte(th);
+        for (int i = 0; i < count; i++)
+            unmarshallInt(th); // was you.exercises
 
-    count = unmarshallByte(th);
-    for (int i = 0; i < count; i++)
-        you.exercises_all.push_back((skill_type)unmarshallInt(th));
+        count = unmarshallByte(th);
+        for (int i = 0; i < count; i++)
+            unmarshallInt(th); // was you.exercises_all
+    }
+#endif
 
     you.skill_menu_do = static_cast<skill_menu_state>(unmarshallByte(th));
     you.skill_menu_view = static_cast<skill_menu_state>(unmarshallByte(th));

@@ -18,7 +18,6 @@ void wizard_set_hunger_state();
 void wizard_set_gold();
 void wizard_set_piety();
 void wizard_set_piety_to(int new_piety, bool force = false);
-void wizard_exercise_skill();
 void wizard_set_abyss();
 void wizard_set_skill_level(skill_type skill = SK_NONE);
 void wizard_set_all_skills();
