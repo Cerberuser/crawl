@@ -687,6 +687,60 @@ bool check_selected_skills()
     // or level 27, so we don't assert.
 }
 
+/**
+ * How much is the next level in each skill worth, ignoring skill costs &
+ * player preferences?
+ *
+ * @param skill_weights[out]    An array of skill weights to be populated.
+ *                              Values are relative to each other but not
+ *                              scaled to anything in particular.
+ */
+static void _populate_autotraining_weights(
+    FixedVector<unsigned int, NUM_SKILLS> &skill_values)
+{
+    for (int i = 0; i < NUM_SKILLS; ++i)
+        skill_values[i] = 1;
+}
+
+/// Reset you.training[] to whatever the game thinks you should train.
+static void _update_autotraining()
+{
+    // grab value of the next unit of skill for each skill
+    FixedVector<unsigned int, NUM_SKILLS> skill_values;
+    _populate_autotraining_weights(skill_values);
+
+    /// make the values fairly large, so we can divide by large skill costs
+    _scale_array(skill_values, 100000000, false);
+
+    // populate training ratios
+    for (int i = 0; i < NUM_SKILLS; ++i)
+    {
+        const skill_type sk = (skill_type)i;
+        if (!skill_trained(sk))
+        {
+            you.training[sk] = 0;
+            continue;
+        }
+
+        // the more a skill costs, the less worthwhile it is (less skill/xp)
+        const int sk_cost = skill_exp_needed(you.skills[sk] + 1, sk);
+        you.training[sk] = skill_values[i] / sk_cost;
+    }
+
+    // need to scale once before we apply focuses
+    _scale_array(you.training, 100, true);
+
+    // Focused skills get at least 20% training
+    for (int sk = 0; sk < NUM_SKILLS; ++sk)
+    {
+        if (you.train[sk] == TRAINING_FOCUSED && you.training[sk] < 20
+            && you.can_train[sk])
+        {
+            you.training[sk] += 5 * (5 - you.training[sk] / 4);
+        }
+    }
+}
+
 /*
  * Reset the training array. Disabled skills are skipped.
  * In automatic mode, we use values from the exercise queue.
@@ -705,11 +759,7 @@ void reset_training()
             you.training[i] = you.train[i];
 
     if (you.auto_training)
-    {
-        // TODO
-        for (int i = 0; i < NUM_SKILLS; ++i)
-            you.training[i] = you.train[i];
-    }
+        _update_autotraining();
 
     _scale_array(you.training, 100, you.auto_training);
 }
