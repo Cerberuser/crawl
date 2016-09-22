@@ -698,6 +698,18 @@ bool check_selected_skills()
 static void _populate_autotraining_weights(
     FixedVector<unsigned int, NUM_SKILLS> &skill_values)
 {
+    // figure out what the player's primary combat skill is. (either a weapon
+    // skill or a (set of) spell skill(s).)
+
+    // figure out how important it is to put points into that skill right now.
+    // (what % to put into offense)
+
+    // split remaining skill points between utility (spells, evo/invo/stealth)
+    // & defense (fighting/armour/dodging) (probably 2:1 defense:utility)
+
+    // split up utility spending
+    // split up defense spending
+
     for (int i = 0; i < NUM_SKILLS; ++i)
         skill_values[i] = 1;
 }
